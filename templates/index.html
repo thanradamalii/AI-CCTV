@@ -1,19 +1,235 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-    <title>AI CCTV Dashboard</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI CCTV Dashboard</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:#eef8ff;
+}
+
+header{
+    background:linear-gradient(135deg,#0ea5e9,#38bdf8);
+    color:white;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+header h1{
+    margin:0;
+    font-size:35px;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+    margin-top:30px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 6px 20px rgba(14,165,233,0.15);
+}
+
+.card h2{
+    margin-top:0;
+    color:#0284c7;
+}
+
+.camera-box{
+    width:100%;
+    background:#dff4ff;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.camera-box img{
+    width:100%;
+    display:block;
+}
+
+.status{
+    font-size:22px;
+    font-weight:bold;
+    color:#0284c7;
+}
+
+.badge{
+    background:#dbeafe;
+    padding:10px 15px;
+    border-radius:999px;
+    display:inline-block;
+    margin-top:10px;
+    color:#0369a1;
+    font-weight:bold;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #e2e8f0;
+    text-align:left;
+}
+
+th{
+    color:#0284c7;
+}
+
+footer{
+    text-align:center;
+    padding:25px;
+    color:#64748b;
+}
+
+@media(max-width:900px){
+
+.grid{
+    grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
 </head>
+
 <body>
-    <h1>AI CCTV Dashboard</h1>
-    <p>รูปล่าสุดที่ตรวจพบจากกล้อง AI</p>
 
-    <img id="latest" src="/static/uploads/latest.jpg" width="600">
+<header>
 
-    <script>
-        setInterval(() => {
-            document.getElementById("latest").src =
-                "/static/uploads/latest.jpg?t=" + new Date().getTime();
-        }, 3000);
-    </script>
+<h1>AI CCTV Dashboard</h1>
+<p>ระบบตรวจจับบุคคลอัจฉริยะออนไลน์</p>
+
+</header>
+
+<div class="container">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>ภาพล่าสุดจากกล้อง</h2>
+
+<div class="camera-box">
+
+<img id="latestImage"
+src="/static/uploads/latest.jpg">
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>สถานะระบบ</h2>
+
+<p class="status" id="detectType">
+กำลังโหลด...
+</p>
+
+<p>เวลาตรวจพบล่าสุด</p>
+
+<div class="badge" id="detectTime">
+กำลังโหลด...
+</div>
+
+<h2 style="margin-top:30px;">
+ประวัติการตรวจจับ
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+<th>เวลา</th>
+<th>ประเภท</th>
+</tr>
+
+</thead>
+
+<tbody id="historyTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+AI CCTV Project By Thanrada
+
+</footer>
+
+<script>
+
+function loadStatus(){
+
+fetch("/status")
+
+.then(response => response.json())
+
+.then(data => {
+
+document.getElementById("latestImage").src =
+data.latest_image + "?t=" + new Date().getTime();
+
+document.getElementById("detectType").innerText =
+data.last_detect_type;
+
+document.getElementById("detectTime").innerText =
+data.last_detect_time;
+
+let table =
+document.getElementById("historyTable");
+
+table.innerHTML = "";
+
+data.history.forEach(item => {
+
+table.innerHTML += `
+<tr>
+<td>${item.time}</td>
+<td>${item.type}</td>
+</tr>
+`;
+
+});
+
+});
+
+}
+
+loadStatus();
+
+setInterval(loadStatus,3000);
+
+</script>
+
 </body>
 </html>
