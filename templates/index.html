@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI CCTV Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+            text-align: center;
+        }
+
+        .card {
+            background: #1f2937;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 16px;
+            width: 80%;
+        }
+
+        img {
+            width: 80%;
+            border-radius: 16px;
+            border: 3px solid #22c55e;
+        }
+
+        .status {
+            font-size: 24px;
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AI CCTV Dashboard</h1>
+
+    <div class="card">
+        <img src="/video">
+    </div>
+
+    <div class="card">
+        <p class="status">จำนวนคนที่ตรวจพบ: <span id="count">0</span></p>
+        <p>เวลาที่ตรวจพบล่าสุด: <span id="time">ยังไม่พบคน</span></p>
+    </div>
+
+    <script>
+        setInterval(() => {
+            fetch("/status")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("count").innerText = data.person_count;
+                    document.getElementById("time").innerText = data.last_detect_time;
+                });
+        }, 1000);
+    </script>
+
+</body>
+</html>
