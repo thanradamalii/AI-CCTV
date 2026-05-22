@@ -5,6 +5,15 @@
 </head>
 <body>
     <h1>AI CCTV Dashboard</h1>
-    <p>เว็บไซต์ทำงานสำเร็จ 🎉</p>
+    <p>รูปล่าสุดที่ตรวจพบจากกล้อง AI</p>
+
+    <img id="latest" src="/static/uploads/latest.jpg" width="600">
+
+    <script>
+        setInterval(() => {
+            document.getElementById("latest").src =
+                "/static/uploads/latest.jpg?t=" + new Date().getTime();
+        }, 3000);
+    </script>
 </body>
 </html>
